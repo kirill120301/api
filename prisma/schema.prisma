@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  login String @unique
+  password String
+  role  String? @default("user")//user admin
+  profileId Int?
+}
+
+model Profile {
+  id Int @id @default(autoincrement())
+  FCs String //фио
+  companyName String
+  companyAddress String
+  phoneNumber Int
+}
+
+model Ticket { //талон
+  id Int @id @default(autoincrement())
+  date DateTime
+  userId Int? //admin
+  applicationId Int?
+}
+
+model Application {
+  id Int @id @default(autoincrement())
+  filling DateTime @default(now())
+  senderId Int?
+  description String?
+  status String? @default("open")
+  specialist String?
+  refusedDescription String?
+}
+
+//отображение заявок только closed | refused
