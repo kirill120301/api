@@ -4,12 +4,11 @@ export class Application {
   senderId: number; //sender is user only
   description: string;
   status: 'open' | 'inProcess' | 'closed' | 'refused';
-  specialist: string;
+  specialist?: string;
   refusedDescription?: string;
 }
 
 export class ApplicationAdd {
-  senderId: number;
+  senderId?: number;
   description: string;
-  specialist: string;
 }

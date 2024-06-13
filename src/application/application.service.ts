@@ -26,12 +26,11 @@ export class ApplicationService {
   }
 
   private async add(application: ApplicationAdd): Promise<Application> {
-    const { senderId, description, specialist } = application;
+    const { senderId, description } = application;
     return (await this.databaseService.application.create({
       data: {
         senderId,
         description,
-        specialist,
       },
     })) as Application;
   }

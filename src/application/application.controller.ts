@@ -32,6 +32,7 @@ export class ApplicationController {
   ) {
     const user = await this.userService.findOne(req.user.username);
     if (user.role !== 'user') throw new UnauthorizedException();
+    applicationAdd.senderId = user.id;
     await this.applicationService.addAndBindTicket(applicationAdd, id);
   }
 }
