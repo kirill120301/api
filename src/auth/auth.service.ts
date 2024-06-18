@@ -31,4 +31,9 @@ export class AuthService {
       role: 'user',
     } as User);
   }
+
+  async delete(id: number) {
+    //del profile
+    return await this.userService.deleteWithApplications(id);
+  }
 }

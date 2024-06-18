@@ -53,4 +53,21 @@ export class UsersService {
       },
     })) as User;
   }
+
+  async getAll(): Promise<User[]> {
+    return (await this.databaseService.user.findMany()) as User[];
+  }
+
+  async deleteWithApplications(id: number) {
+    this.databaseService.application.deleteMany({
+      where: {
+        senderId: id,
+      },
+    });
+    return await this.databaseService.user.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }

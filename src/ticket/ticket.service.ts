@@ -23,6 +23,14 @@ export class TicketService {
     return await this.databaseService.ticket.findMany();
   }
 
+  async getTicket(id: number): Promise<Ticket> {
+    return await this.databaseService.ticket.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
   async subscribeOnApplication(ticketId: number, applicationId: number) {
     await this.databaseService.ticket.update({
       where: {
@@ -32,5 +40,15 @@ export class TicketService {
         applicationId,
       },
     });
+  }
+
+  async deleteTicket(ticketId: number) {
+    const ticketToDelete = await this.databaseService.ticket.delete({
+      where: {
+        id: ticketId,
+      },
+    });
+    //await this.applicationsService.delete(ticketToDelete.applicationId);
+    return ticketToDelete;
   }
 }

@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { Application, ApplicationAdd } from 'src/dto/application.dto';
+import {
+  Application,
+  ApplicationAdd,
+  ApplicationChange,
+} from 'src/dto/application.dto';
 import { TicketService } from 'src/ticket/ticket.service';
 
 @Injectable()
@@ -15,6 +19,18 @@ export class ApplicationService {
       'ApplicationService',
       await this.databaseService.application.findMany(),
     );
+  }
+
+  async get(): Promise<Application[]> {
+    return (await this.databaseService.application.findMany()) as Application[];
+  }
+
+  async getBySenderId(senderId: number): Promise<Application[]> {
+    return (await this.databaseService.application.findMany({
+      where: {
+        senderId,
+      },
+    })) as Application[];
   }
 
   async addAndBindTicket(application: ApplicationAdd, ticketId: number) {
@@ -33,5 +49,34 @@ export class ApplicationService {
         description,
       },
     })) as Application;
+  }
+
+  async change(application: ApplicationChange): Promise<Application> {
+    return (await this.databaseService.application.update({
+      where: {
+        id: application.id,
+      },
+      data: {
+        status: application.status,
+        specialist: application.specialist,
+        refusedDescription: application.refusedDescription,
+      },
+    })) as Application;
+  }
+
+  async delete(id: number) {
+    return await this.databaseService.application.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async deleteAllSenderApplications(senderId: number) {
+    return await this.databaseService.application.deleteMany({
+      where: {
+        senderId,
+      },
+    });
   }
 }

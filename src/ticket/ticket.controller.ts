@@ -1,9 +1,11 @@
 import {
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Request,
   UnauthorizedException,
@@ -38,5 +40,13 @@ export class TicketController {
       date: parseDate,
       userId: user.id,
     } as Ticket);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Delete('/:id')
+  async delete(@Request() req, @Param('id', ParseIntPipe) id: number) {
+    const user = await this.userService.findOne(req.user.username);
+    if (user.role !== 'admin') throw new UnauthorizedException();
+    return await this.ticketService.deleteTicket(id);
   }
 }

@@ -6,9 +6,9 @@ import { TicketModule } from 'src/ticket/ticket.module';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
+  imports: [DatabaseModule, UsersModule, TicketModule],
   providers: [ApplicationService],
-  controllers: [ApplicationController],
-  imports: [TicketModule, DatabaseModule, UsersModule],
   exports: [ApplicationService],
+  controllers: [ApplicationController],
 })
 export class ApplicationModule {}

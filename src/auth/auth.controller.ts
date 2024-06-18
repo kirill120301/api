@@ -8,10 +8,14 @@ import {
   Get,
   Request,
   UnauthorizedException,
+  Param,
+  ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { UsersService } from 'src/users/users.service';
+import { User } from 'src/dto/user.dto';
 
 @Controller()
 export class AuthController {
@@ -53,5 +57,33 @@ export class AuthController {
       login: data.login,
       role: data.role,
     };
+  }
+
+  @Get('users/:id')
+  async getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    const data = await this.userService.findById(id);
+    return await {
+      id: data.id,
+      login: data.login,
+      role: data.role,
+    };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('users')
+  async getUsers(@Request() req): Promise<User[]> {
+    const user = await this.userService.findOne(req.user.username);
+    if (user.role !== 'admin') throw new UnauthorizedException();
+
+    return await this.userService.getAll();
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('users/:id')
+  async deleteUser(@Request() req, @Param('id', ParseIntPipe) id: number) {
+    const user = await this.userService.findOne(req.user.username);
+    if (user.role !== 'admin') throw new UnauthorizedException();
+
+    return await this.authService.delete(id);
   }
 }

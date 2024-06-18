@@ -12,3 +12,10 @@ export class ApplicationAdd {
   senderId?: number;
   description: string;
 }
+
+export class ApplicationChange {
+  id?: number;
+  status?: 'open' | 'inProcess' | 'closed' | 'refused';
+  specialist?: string;
+  refusedDescription?: string;
+}
