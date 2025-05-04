@@ -4,3 +4,8 @@ export class User {
   password?: string;
   role: 'admin' | 'user';
 }
+
+export class UpdateUser {
+  login: string;
+  password?: string;
+}

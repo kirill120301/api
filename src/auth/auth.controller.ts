@@ -11,11 +11,13 @@ import {
   Param,
   ParseIntPipe,
   Delete,
+  Put,
+  ForbiddenException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { UsersService } from 'src/users/users.service';
-import { User } from 'src/dto/user.dto';
+import { UpdateUser, User } from 'src/dto/user.dto';
 
 @Controller()
 export class AuthController {
@@ -76,6 +78,28 @@ export class AuthController {
     if (user.role !== 'admin') throw new UnauthorizedException();
 
     return await this.userService.getAll();
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('users/:id')
+  async updateUser(
+    @Request() req,
+    @Body() updateUser: UpdateUser,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const user = await this.userService.findOne(req.user.username);
+    if (user.role !== 'admin') throw new UnauthorizedException();
+
+    const { login, password } = updateUser;
+    const { role } = await this.userService.findById(id);
+    if (role === 'admin')
+      throw new ForbiddenException('Can not change admin profile');
+    return await this.userService.update({
+      id,
+      login,
+      password,
+      role,
+    });
   }
 
   @UseGuards(AuthGuard)
